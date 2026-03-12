@@ -26,38 +26,47 @@ git clone [https://github.com/yourusername/dbsnap.git](https://github.com/yourus
 cd dbsnap
 go mod tidy
 go build -ldflags="-s -w" -o dbsnap main.go
-
-Usage
+```
+## Usage
 dbSnap is operated entirely through the CLI.
 
-1. Initial Setup
+### 1. Initial Setup
 Run the setup wizard to configure your target paths, database connections, and schedule the background task.
 
-Bash
+```bash
 dbsnap setup
+```
+
 (Note: On Windows, you must run your terminal as Administrator to allow schtasks to register the background job).
 
-2. Manual Backup (Dry Run)
+### 2. Manual Backup (Dry Run)
 You can manually trigger the backup sequence to verify network connections and folder generation without waiting for the scheduled time.
 
-Bash
+```bash
 dbsnap backup
-3. Restore Data
+```
+
+### 3. Restore Data
 If you need to recover data, use the restore command to pull up the interactive timestamp menu. You can choose to inject the data alongside existing records or drop the live collections first for a clean slate.
 
-Bash
+```bash
 dbsnap restore
-4. Teardown
+```
+
+### 4. Teardown
 To cleanly unregister the background OS task and wipe your credentials from the OS vault (without deleting your backed-up data):
 
-Bash
+```bash
 dbsnap revert
-Security & Architecture
-Credentials: Managed via github.com/zalando/go-keyring.
+```
 
-Logging: Background runs append to a dbsnap.log file in your target backup directory, rotating every 30 days.
+## Security & Architecture
 
-Purge Safety: Uses an "Isolate & Continue" architecture. If mongodump fails to export a collection, the subsequent destructive deleteMany operation for that specific collection is automatically aborted to prevent data loss.
+### Credentials: Managed via github.com/zalando/go-keyring.
 
-Disclaimer
+### Logging: Background runs append to a dbsnap.log file in your target backup directory, rotating every 30 days.
+
+### Purge Safety: Uses an "Isolate & Continue" architecture. If mongodump fails to export a collection, the subsequent destructive deleteMany operation for that specific collection is automatically aborted to prevent data loss.
+
+### Disclaimer
 If you enable the "Purge after backup" feature during setup, dbSnap will execute a destructive deleteMany({}) operation on the selected live collections once the backup is verified. Use this feature with caution and ensure proper database user privileges.
